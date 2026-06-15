@@ -21,7 +21,7 @@ from khmer_transliterator._inference import (
 )
 from khmer_transliterator.preprocessing import clean_text, normalize_khmer
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Darayut Nhem"
 
 __all__ = [

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/netra-logo-transparent-new.png" width="60%" alt="Netra Lab" />
+  <img src="https://raw.githubusercontent.com/NDarayut/khmer-english-transliteration/main/assets/netra-logo-transparent-new.png" width="60%" alt="Netra Lab" />
 </div>
 <hr>
 
@@ -16,7 +16,7 @@
 </h2>
 
 <p align="center">
-<img src="assets/benchmark.png" style="width: 1000px" align=center>
+<img src="https://raw.githubusercontent.com/NDarayut/khmer-english-transliteration/main/assets/benchmark.png" style="width: 1000px" align=center>
 </p>
 
 <p align="center">
@@ -35,7 +35,7 @@ There are 77 unique Khmer characters and 26 unique English characters in the dat
 
 
 <figure>
-    <img src="./assets/word_length.png" alt="Word Length Distribution">
+    <img src="https://raw.githubusercontent.com/NDarayut/khmer-english-transliteration/main/assets/word_length.png" alt="Word Length Distribution">
     <figcaption>
         <strong>Figure 1 | Word Length Distribution of Romanized Khmer, and Khmer Script</strong>
     </figcaption>
@@ -52,7 +52,7 @@ There are 77 unique Khmer characters and 26 unique English characters in the dat
 The model is based on an Attention-Based Bidirectional GRU architecture designed for sequence-to-sequence transliteration. It follows an encoder–decoder structure, where the encoder processes the input Latin Script (English) sequence, and the decoder generates the corresponding Khmer script sequence character by character.
 
 <figure>
- <img src="./assets/model_architecture.png" alt="Model Architecture">
+ <img src="https://raw.githubusercontent.com/NDarayut/khmer-english-transliteration/main/assets/model_architecture.png" alt="Model Architecture">
 <figcaption>
     <strong>Figure 2 | The proposed Attention-based Bidirectional Gated Recurrent Unit architecture.</strong>
   </figcaption>
@@ -84,7 +84,7 @@ The decoder consists of a GRU layer that processes the output sequence one Khmer
 To maximize accuracy without adding model bloat, our post-processing pipeline ensures all outputs are valid Khmer words. The model first generates three candidate transliterations using Beam Search (k=3). These are cross-referenced with a standard dictionary; if no exact match exists, a Levenshtein distance fallback corrects the prediction to the closest valid word (up to a 2-character edit limit).
 
 <figure>
- <img src="./assets/full_pipeline.png" alt="Post-processing pipeline">
+ <img src="https://raw.githubusercontent.com/NDarayut/khmer-english-transliteration/main/assets/full_pipeline.png" alt="Post-processing pipeline">
     <figcaption>
         <strong>Figure 3 | End-to-End inference pipeline with post-processing technique.</strong> The input flow through the encoder-decoder model to generate 3 prediction using beam search (k=3). Following the beam search output, a lexical validation layer cross-referencing the outputs with Khmer Dictionary. The pipeline uses Levenshtein distance to recover the closest orthographically valid entries, resulting in the finals words being all valid.
     </figcaption>
@@ -113,7 +113,7 @@ $$Top - k = \frac{1}{M} \sum_{i=1}^{M} (y_i \in \{\hat{y}_{i,1}, \hat{y}_{i,2}, 
 ### 3. Quantitative Analysis
 
 <figure>
- <img src="./assets/top_k.png" alt="Trade-off analysis chart">
+ <img src="https://raw.githubusercontent.com/NDarayut/khmer-english-transliteration/main/assets/top_k.png" alt="Trade-off analysis chart">
     <figcaption>
         <strong>Figure 4 | Analytical trade-off between transliteration accuracy and computational overhead.</strong> (a) Search space benefit analysis illustrating the gap between primary prediction (Top-1) and system recall (Top-K). The shaded region represents the additive benefit of beam search; at the recommended k=5 setting, the system provides a 9.81 percentage-point (pp) recall gain over the top-1 prediction. (b) The computational efficiency frontier, highlighting the relationship between accuracy gains and inference latency. The gray bars represent the absolute magnitude of computational overhead, while the red dotted line tracks the linear latency trajectory across different beam widths. The optimal operating point is k=5, which achieves a 29.16% absolute accuracy increase over greedy decoding while remaining under the 100ms real-time latency threshold; beyond this point, the system exhibits diminishing returns as latency exceeds the limits of user interaction.
     </figcaption>
@@ -145,7 +145,7 @@ Table 2 | Performance comparison of system configuration. A comparative analysis
 
 ### 4. Qualitative Analysis
 Table 3 | Qualitative comparison across all model showing model performance across various instances of Romanized Khmer Script ranging from short to long words.
-![Qualitative Analysis](./assets/qualitative_analysis.png)
+![Qualitative Analysis](https://raw.githubusercontent.com/NDarayut/khmer-english-transliteration/main/assets/qualitative_analysis.png)
 
 ## Installation
 
@@ -202,15 +202,15 @@ print(t.transliterate("brodae"))
 ### Command Line
 
 ```
-usage: khmer-transliterator [-h] [-n N] [--no-dict] [--shell] [--serve] [--port PORT] [WORD ...]
+usage: netra-transliterate [-h] [-n N] [--no-dict] [--shell] [--serve] [--port PORT] [WORD ...]
 ```
 
 **Transliterate words directly:**
 ```bash
-khmer-transliterator brodae
+netra-transliterate brodae
 # brodae    ប្រដែ
 
-khmer-transliterator brodae sokha -n 3
+netra-transliterate brodae sokha -n 3
 # brodae:
 #   1. ប្រដែ
 #   2. រដែ
@@ -222,22 +222,22 @@ khmer-transliterator brodae sokha -n 3
 
 **Interactive shell:**
 ```bash
-khmer-transliterator --shell
+netra-transliterate --shell
 # or just:
-khmer-transliterator
+netra-transliterate
 ```
 
 **Skip dictionary post-processing:**
 ```bash
-khmer-transliterator brodae --no-dict
+netra-transliterate brodae --no-dict
 ```
 
 **Web server:**
 ```bash
-khmer-transliterator --serve
+netra-transliterate --serve
 # Starting web server at http://localhost:5000
 
-khmer-transliterator --serve --port 8080
+netra-transliterate --serve --port 8080
 ```
 
 ## Web Application
@@ -245,13 +245,13 @@ khmer-transliterator --serve --port 8080
 A browser-based UI is bundled with the package. Start it with:
 
 ```bash
-khmer-transliterator --serve
+netra-transliterate --serve
 ```
 
 Then open http://localhost:5000 in your browser. Type a romanized Khmer word to see live suggestions; use **Tab** to cycle through candidates and **Space** to accept one.
 
 ## Demo
-![Web Application](./assets/video.gif)
+![Web Application](https://raw.githubusercontent.com/NDarayut/khmer-english-transliteration/main/assets/video.gif)
 
 ## Citation
 > Chhunneng. (2023). *Khmer Text Transliteration Dataset*. GitHub repository.  
