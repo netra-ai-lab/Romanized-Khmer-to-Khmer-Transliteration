@@ -4,9 +4,8 @@
 <hr>
 
 <p align="center">
-    <a href="./paper/technical report.pdf"><b>Paper</b></a> |
-    <a href="eng_khm_data.txt"><b>Dataset Download</b></a> |
-    <a href="./BiGRU-Attention/"><b>Model Download</b></a> |
+    <a href="https://github.com/Chhunneng/khmer-text-transliteration"><b>Dataset</b></a> |
+    <a href="khmer_transliterator/weights/"><b>Model Weights</b></a>
 </p>
 
 
@@ -149,51 +148,109 @@ Table 3 | Qualitative comparison across all model showing model performance acro
 ![Qualitative Analysis](./assets/qualitative_analysis.png)
 
 ## Installation
+
+**From PyPI (recommended):**
+```bash
+pip install khmer-transliterator
+```
+
+**From source:**
 ```bash
 git clone https://github.com/NDarayut/english-khmer-transliteration.git
 cd english-khmer-transliteration
-pip install -r requirements.txt
+pip install -e .
 ```
 
-## Usage  
-## 1. Generate single transliteration  
+## Usage
+
+### Python API
+
+#### 1. Single best transliteration
 ```python
-from inference import transliterate_text
+from khmer_transliterator import transliterate
 
-print(transliterate_text(eng_input="brodae", beam_width=3, max_length=32))
-# Expected Result: 'ប្រដែ'
+print(transliterate("brodae"))
+# 'ប្រដែ'
 ```
 
-## 2. Generate multiple transliteration  
+#### 2. Top-N candidates (raw model output)
 ```python
-from inference import transliterate_top_n
+from khmer_transliterator import transliterate_top_n
 
-print(transliterate_top_n("brodae", beam_width=5, max_length=32, n=3))
-# Expected Result: ['ប្រដែ', 'បរដែ', 'ប្រតែ']
+print(transliterate_top_n("brodae", n=3))
+# ['ប្រដែ', 'បរដែ', 'ប្រតែ']
 ```
 
-## 3. Generate multiple transliteration with correction 
+#### 3. Top-N candidates with dictionary validation
 ```python
-from inference import transliterate_with_dict
+from khmer_transliterator import transliterate_with_dict
 
-print(translitertransliterate_with_dictate("brodae", beam_width=5, max_length=32, n=3, max_distance=2))
-# Top Candidates from model: ['ប្រដែ', 'បរដែ', 'ប្រតែ']
-# Valid Candidates after filtering: ['ប្រដែ', 'រដែ', 'ប្រែ']
+print(transliterate_with_dict("brodae", n=3))
+# ['ប្រដែ', 'រដែ', 'ប្រែ']
 ```
 
-## Web Application  
-To demonstrate the functionality of this transliteration system, a simple **Flask web application** has been created.  
+The `Transliterator` class is also available for explicit instantiation:
+```python
+from khmer_transliterator import Transliterator
 
-To run the application:
+t = Transliterator()
+print(t.transliterate("brodae"))
+```
+
+> **Note:** The Keras model loads lazily on the first call (~1–2 s one-time cost).
+
+### Command Line
+
+```
+usage: khmer-transliterator [-h] [-n N] [--no-dict] [--shell] [--serve] [--port PORT] [WORD ...]
+```
+
+**Transliterate words directly:**
 ```bash
-python app.py
+khmer-transliterator brodae
+# brodae    ប្រដែ
+
+khmer-transliterator brodae sokha -n 3
+# brodae:
+#   1. ប្រដែ
+#   2. រដែ
+#   3. ប្រែ
+# sokha:
+#   1. សុខា
+#   ...
 ```
 
-Open your web browser and navigate to:
-http://127.0.0.1:5000/
+**Interactive shell:**
+```bash
+khmer-transliterator --shell
+# or just:
+khmer-transliterator
+```
 
+**Skip dictionary post-processing:**
+```bash
+khmer-transliterator brodae --no-dict
+```
 
-## Demo  
+**Web server:**
+```bash
+khmer-transliterator --serve
+# Starting web server at http://localhost:5000
+
+khmer-transliterator --serve --port 8080
+```
+
+## Web Application
+
+A browser-based UI is bundled with the package. Start it with:
+
+```bash
+khmer-transliterator --serve
+```
+
+Then open http://localhost:5000 in your browser. Type a romanized Khmer word to see live suggestions; use **Tab** to cycle through candidates and **Space** to accept one.
+
+## Demo
 ![Web Application](./assets/video.gif)
 
 ## Citation

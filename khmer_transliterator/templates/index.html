@@ -213,7 +213,7 @@
             <li><span class="key-shortcut">Tab</span>: Move to the next suggestion</li>
             <li><span class="key-shortcut">Space</span>: Accept the highlighted suggestion</li>
             <li>Accepted words will be added continuously without spaces</li>
-            <li>The suggestions update with every keystroke</li>
+            <li>Suggestions appear after a short pause in typing</li>
         </ul>
     </div>
 </div>
@@ -223,6 +223,11 @@ const inputBox = document.getElementById('input-box');
 const suggestionsDiv = document.getElementById('suggestions');
 let candidates = [];
 let highlightedIndex = 0;
+let debounceTimer = null;
+let activeController = null;  // AbortController for the in-flight request
+
+const DEBOUNCE_MS = 300;
+const MIN_WORD_LENGTH = 2;
 
 function getTextParts() {
     const text = inputBox.value;
@@ -233,24 +238,44 @@ function getTextParts() {
 
 function replaceCurrentWord(newWord) {
     const { prefix } = getTextParts();
-    inputBox.value = prefix + newWord; // continuous Khmer text
+    inputBox.value = prefix + newWord;
 }
 
 function getCurrentWord() {
-    const { current } = getTextParts();
-    return current;
+    return getTextParts().current;
 }
 
 async function fetchCandidates(word) {
-    const res = await fetch('/transliterate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word })
-    });
-    const data = await res.json();
-    candidates = data.candidates;
-    highlightedIndex = 0;
-    renderSuggestions();
+    // Cancel any request still in flight
+    if (activeController) activeController.abort();
+    activeController = new AbortController();
+
+    try {
+        const res = await fetch('/transliterate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ word }),
+            signal: activeController.signal
+        });
+        const data = await res.json();
+        candidates = data.candidates;
+        highlightedIndex = 0;
+        renderSuggestions();
+    } catch (err) {
+        if (err.name !== 'AbortError') console.error(err);
+    }
+}
+
+function scheduleRequest(word) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => fetchCandidates(word), DEBOUNCE_MS);
+}
+
+function clearSuggestions() {
+    clearTimeout(debounceTimer);
+    if (activeController) { activeController.abort(); activeController = null; }
+    candidates = [];
+    suggestionsDiv.innerHTML = '';
 }
 
 function renderSuggestions() {
@@ -269,18 +294,14 @@ function renderSuggestions() {
 function acceptCandidate(idx) {
     const word = candidates[idx];
     replaceCurrentWord(word);
-    candidates = [];
-    suggestionsDiv.innerHTML = '';
+    clearSuggestions();
     inputBox.focus();
 }
 
 inputBox.addEventListener('input', () => {
     const word = getCurrentWord().trim();
-    if (word) fetchCandidates(word);
-    else {
-        candidates = [];
-        suggestionsDiv.innerHTML = '';
-    }
+    if (word.length >= MIN_WORD_LENGTH) scheduleRequest(word);
+    else clearSuggestions();
 });
 
 inputBox.addEventListener('keydown', (e) => {

@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "khmer-transliterator"
+version = "1.0.0"
+description = "English-to-Khmer transliteration using a BiGRU-Attention neural network."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Darayut Nhem", email = "darayutnhem009@gmail.com" }
+]
+keywords = ["khmer", "transliteration", "nlp", "deep-learning", "khmer-nlp", "seq2seq"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "tensorflow>=2.17.0,<3.0",
+    "numpy>=1.24",
+    "Levenshtein>=0.21",
+    "khmerspell>=0.1",
+    "flask>=2.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+train = [
+    "pandas>=2.0",
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+    "jupyter>=1.0",
+]
+
+[project.scripts]
+khmer-transliterator = "khmer_transliterator.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/darayutnhem009/khmer-english-transliteration"
+Repository = "https://github.com/darayutnhem009/khmer-english-transliteration"
+
+[tool.setuptools.packages.find]
+include = ["khmer_transliterator*"]
+
+[tool.setuptools.package-data]
+"khmer_transliterator.weights" = ["*.keras", "*.pkl", "*.txt"]
+"khmer_transliterator.templates" = ["*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
