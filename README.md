@@ -151,7 +151,7 @@ Table 3 | Qualitative comparison across all model showing model performance acro
 
 **From PyPI (recommended):**
 ```bash
-pip install khmer-transliterator
+pip install netra-transliterate
 ```
 
 **From source:**
