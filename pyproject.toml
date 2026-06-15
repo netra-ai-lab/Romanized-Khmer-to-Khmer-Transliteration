@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "khmer-transliterator"
+name = "netra-transliterate"
 version = "1.0.0"
 description = "English-to-Khmer transliteration using a BiGRU-Attention neural network."
 readme = "README.md"
@@ -46,7 +46,7 @@ train = [
 ]
 
 [project.scripts]
-khmer-transliterator = "khmer_transliterator.cli:main"
+netra-transliterate = "khmer_transliterator.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/darayutnhem009/khmer-english-transliteration"

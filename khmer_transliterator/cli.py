@@ -14,18 +14,18 @@ def _version() -> str:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="khmer-transliterator",
+        prog="netra-transliterate",
         description="Transliterate romanized Khmer (English letters) into Khmer script.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 examples:
-  khmer-transliterator sokha
-  khmer-transliterator sokha srolanh
-  khmer-transliterator sokha -n 5
-  khmer-transliterator sokha --no-dict
-  khmer-transliterator --shell
-  khmer-transliterator --serve
-  khmer-transliterator --serve --port 8080
+  netra-transliterate sokha
+  netra-transliterate sokha srolanh
+  netra-transliterate sokha -n 5
+  netra-transliterate sokha --no-dict
+  netra-transliterate --shell
+  netra-transliterate --serve
+  netra-transliterate --serve --port 8080
         """,
     )
 
